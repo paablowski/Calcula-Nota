@@ -28,18 +28,34 @@ class ViewController: UIViewController {
         display1.text = String(slider1.value)
         display2.text = String(slider2.value)
         display3.text = String(slider3.value)
-        displayPromedio.text = String(5.7)
+        displayPromedio.text = String(5.9)
         
     }
     @IBAction func slider1Changed(_ sender: UISlider) {
+        
+        if sender.value < 4 {
+            self.display1.textColor = UIColor(hexString: "#ff3b30")
+        }else{
+            self.display1.textColor = UIColor(hexString: "#007aff")
+        }
         self.display1.text = String(format: "%.1f", sender.value)
     }
     
     @IBAction func slider2Changed(_ sender: UISlider) {
+        if sender.value < 4 {
+            self.display2.textColor = UIColor(hexString: "#ff3b30")
+        }else{
+            self.display2.textColor = UIColor(hexString: "#007aff")
+        }
         self.display2.text = String(format: "%.1f", sender.value)
     }
     
     @IBAction func slider3Changed(_ sender: UISlider) {
+        if sender.value < 4 {
+            self.display3.textColor = UIColor(hexString: "#ff3b30")
+        }else{
+            self.display3.textColor = UIColor(hexString: "#007aff")
+        }
         self.display3.text = String(format: "%.1f", sender.value)
     }
     
@@ -54,14 +70,9 @@ class ViewController: UIViewController {
     func calculaPromedio(nota1: Float, nota2: Float, nota3: Float){
         let suma = nota1 + nota2 + nota3
         displayPromedio.text = String(String(format:"%.3f", suma))
-    }
-    
-    
-    /*
-    @IBAction func btnExamenPress(_ sender: UIButton) {
         
-        if self.slider.value <= 3.6 {
-            let vaAExamen = UIAlertController(title: "Nota: \(self.slider.value)",
+        if suma < 4 {
+            let vaAExamen = UIAlertController(title: "⚠️ ¡Alerta! ⚠️",
                 message: "Tendrás que dar examen",
                 preferredStyle: .alert)
             let accion = UIAlertAction(title: "Ok 😥",
@@ -69,18 +80,26 @@ class ViewController: UIViewController {
                                        handler: nil)
             vaAExamen.addAction(accion)
             present(vaAExamen, animated: true, completion: nil)
-            
-        }else{
-            let noVaAExamen = UIAlertController(title: "Nota: \(self.slider.value)",
-                message: "Te salvaste de dar examen 💪🏻",
-                preferredStyle: .alert)
-            let accion = UIAlertAction(title: "Cool 🤩",
-                                       style: .default,
-                                       handler: nil)
-            noVaAExamen.addAction(accion)
-            present(noVaAExamen, animated: true, completion: nil)
         }
-     
-    }*/
-    
+    }
+}
+
+extension UIColor {
+    convenience init(hexString: String) {
+        let hex = hexString.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int = UInt32()
+        Scanner(string: hex).scanHexInt32(&int)
+        let a, r, g, b: UInt32
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (255, 0, 0, 0)
+        }
+        self.init(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)
+    }
 }
